@@ -1,0 +1,32 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar {
+  border-bottom-left-radius: 3%;
+  border-bottom-right-radius: 3%;
+  background: linear-gradient(to right, #b3e0ff, #ffc0cb, #ffebcd, #e6f7ff);
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+.card {
+  background: linear-gradient(to right, #b3e0ff, #ffc0cb, #ffebcd, #e6f7ff);
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.btn-first {
+  background-color: #138dff;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #ff3d7b;
+  color: white;
+}

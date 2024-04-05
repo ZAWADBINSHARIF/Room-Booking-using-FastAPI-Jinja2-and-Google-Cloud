@@ -1,0 +1,38 @@
+<!-- header include -->
+{% include "partials/header.html" %}
+
+<div class="d-flex justify-content-center p-5">
+  <div class="card w-50">
+    <div class="card-body">
+      <h2 class="card-title">Signup</h2>
+      <form class="d-flex flex-column gap-2">
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input
+            type="text"
+            class="form-control"
+            id="signup-email"
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="signup-password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <button type="submit" id="signup-btn" class="btn btn-primary btn-block">
+          Signup
+        </button>
+        <a href="/login" class="btn btn-light border-1 border-primary btn-block">Login</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- footer include  -->
+{% include "partials/footer.html" %}
