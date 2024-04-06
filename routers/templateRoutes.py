@@ -25,6 +25,23 @@ async def home_page(req: Request, response_class=HTMLResponse):
     )
 
 
+@templateRoutes.get("/add")
+async def add_page(req: Request):
+    
+    try:
+        user_info = req.state.user_info
+
+        if len(user_info) == 0:
+            return RedirectResponse("/login")
+
+    except:
+        return RedirectResponse("/login")
+
+    return templates.TemplateResponse(
+        request=req, name="add.html", context={"user_info": user_info}
+    )
+
+
 @templateRoutes.get("/login")
 async def login_page(req: Request, response_class=HTMLResponse):
     return templates.TemplateResponse(request=req, name="login.html")

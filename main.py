@@ -8,6 +8,7 @@ import google.oauth2.id_token
 
 # internal import
 from routers.templateRoutes import templateRoutes
+from routers.roomBookingRoutes import roomBooking
 
 
 app = FastAPI(
@@ -36,7 +37,7 @@ async def log_middleware(req: Request, call_next):
                 id_token, firebase_request_adapter
             )
             req.state.user_info = user_info
-
+            print(user_info["user_id"])
         except Exception as err:
             print(err)
     else:
@@ -48,6 +49,8 @@ async def log_middleware(req: Request, call_next):
 
 # ** Template Routes
 app.include_router(templateRoutes)
+# ** RoomBooking Routes
+app.include_router(roomBooking)
 
 
 if __name__ == "__main__":

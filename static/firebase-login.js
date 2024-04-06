@@ -50,7 +50,7 @@ if (login_btn)
 
             setTimeout(() => {
                 window.location = "/";
-            }, 1000);
+            }, 700);
 
 
         } catch (error) {
