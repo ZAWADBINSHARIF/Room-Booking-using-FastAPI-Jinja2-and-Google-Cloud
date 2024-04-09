@@ -9,15 +9,6 @@
         <input
           type="text"
           class="form-control"
-          id="room_id"
-          placeholder="Enter the room ID"
-        />
-        <label for="room_id">Enter the room ID</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input
-          type="text"
-          class="form-control"
           id="name"
           placeholder="Enter the room name"
         />
@@ -46,7 +37,6 @@
 </div>
 
 <script defer>
-  const room_id = document.querySelector('#room_id');
   const room_name = document.querySelector('#name');
   const room_location = document.querySelector('#location');
   const addRoomBtn = document.querySelector('#add-room-btn');
@@ -56,7 +46,6 @@
   addRoomBtn.addEventListener('click', async () => {
     const room_info = {
       user_id,
-      room_id: room_id.value,
       name: room_name.value,
       location: room_location.value,
     };
@@ -71,7 +60,7 @@
       });
 
       if (response.status === 409) {
-        room_id.classList.add('is-invalid');
+        room_name.classList.add('is-invalid');
       } else if (response.status === 201) {
         window.location = '/';
       }

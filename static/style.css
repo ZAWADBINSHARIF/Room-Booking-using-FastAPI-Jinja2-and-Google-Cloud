@@ -36,3 +36,11 @@ a {
 .btn-second {
   background: #ffffff;
 }
+.btn-delete {
+  background-color: #ff6c84;
+}
+
+.btn-delete:hover {
+  background-color: #ffffff;
+  border: 1px solid #ff6c84;
+}

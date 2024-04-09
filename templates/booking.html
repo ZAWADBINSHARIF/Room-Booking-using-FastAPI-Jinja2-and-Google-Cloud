@@ -1,0 +1,47 @@
+<!-- header include -->
+{% include "partials/header.html" %}
+
+<h1 class="pt-5 fw-bold">Booking</h1>
+<div>
+  <div class="mb-3 w-50">
+    <label for="from" class="form-label">From</label>
+    <input type="datetime-local" class="form-control" id="from" />
+    <label for="to" class="form-label">To</label>
+    <input type="datetime-local" class="form-control" id="to" />
+  </div>
+  <button id="searchBtn" class="btn btn-first">Search</button>
+</div>
+
+<script>
+  const searchBtn = document.getElementById('searchBtn');
+
+  searchBtn.addEventListener('click', async () => {
+    const from = document.getElementById('from').value;
+    const to = document.getElementById('to').value;
+
+    if (!from && !to) {
+      return;
+    }
+
+    try {
+      timeObj = {
+        from_date: new Date(from).toISOString().replace('T', ' ').replace("Z", "+0000"),
+        to_date: new Date(to).toISOString().replace('T', ' ').replace("Z", "+0000"),
+      };
+      console.log(JSON.stringify(timeObj));
+
+      const response = await fetch('/room/search-for-booking', {
+        method: 'post',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: timeObj,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+</script>
+
+<!-- footer include  -->
+{% include "partials/footer.html" %}

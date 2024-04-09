@@ -1,7 +1,24 @@
 <!-- header include -->
 {% include "partials/header.html" %}
 
-<h1>Home</h1>
+<div class="py-5">
+  <h1 class="fw-bold">All Rooms</h1>
+  <div class="d-flex flex-wrap gap-3">
+    {% if all_rooms and user_info %} {% for room in all_rooms%}
+    <div class="card" style="width: 18rem">
+      <div class="card-header">Name: {{room.name}}</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Location: {{room.location}}</li>
+        {% if user_info.user_id == room.user_id%}
+        <li class="list-group-item text-end">
+          <button class="btn-delete btn">Delete</button>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+    {% endfor %} {% endif %}
+  </div>
+</div>
 
 <!-- footer include  -->
 {% include "partials/footer.html" %}
