@@ -31,7 +31,7 @@ async def log_middleware(req: Request, call_next):
     id_token = req.cookies.get("token")
 
     if id_token and id_token != "":
-        try:
+        try:        
 
             user_info = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter

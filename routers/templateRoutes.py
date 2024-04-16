@@ -50,8 +50,9 @@ async def add_page(req: Request):
 
 
 @templateRoutes.get("/booking")
-async def add_page(req: Request):
+async def add_page(req: Request, from_date: str | None  = None, to_date: str|None = None):
 
+    print("booking/search")
     try:
         user_info = req.state.user_info
 
@@ -61,9 +62,13 @@ async def add_page(req: Request):
     except:
         return RedirectResponse("/login")
 
+    print(from_date, to_date)
+
     return templates.TemplateResponse(
         request=req, name="booking.html", context={"user_info": user_info}
     )
+
+
 
 
 @templateRoutes.get("/login")

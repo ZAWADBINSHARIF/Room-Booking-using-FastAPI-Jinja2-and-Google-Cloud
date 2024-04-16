@@ -58,7 +58,7 @@ async def get():
 
 
 @RB.post("/search-for-booking")
-def search_for_booking_room(from_date: str, to_date: str):
+def search_for_booking_room(from_date: int, to_date: int):
     All_Rooms = []
 
     try:
@@ -69,31 +69,41 @@ def search_for_booking_room(from_date: str, to_date: str):
             roomData = doc.to_dict()
             daysArray = roomData.get("days")
 
-            if daysArray != None:
+            if daysArray is not None:
                 for day in daysArray:
                     dayData = day.get().to_dict()
 
-                    Booked_Start_Date = dayData.get("from_date")
-                    Booked_End_Date = dayData.get("to_date")
-
-                    # Convert from_date and to_date to datetime objects
-                    from_datetime_obj = datetime.strptime(
-                        from_date, "%Y-%m-%d %H:%M:%S.%f%z"
-                    )
-                    to_datetime_obj = datetime.strptime(
-                        to_date, "%Y-%m-%d %H:%M:%S.%f%z"
-                    )
-
-                    # Compare the datetime
                     if (
-                        to_datetime_obj < Booked_Start_Date
-                        or from_datetime_obj > Booked_End_Date
+                        dayData.get("from_date") is not None
+                        and dayData.get("to_date") is not None
                     ):
-                        # No overlap, add roomData to All_Rooms
-                        All_Rooms.append(roomData)
-                    else:
-                        # Overlap, skip this room
-                        break
+
+                        DB_Booked_Start_Date = int(
+                            dayData.get("from_date").timestamp() * 1000
+                        )
+                        DB_Booked_End_Date = int(
+                            dayData.get("to_date").timestamp() * 1000
+                        )
+
+
+                        # Compare the datetime
+                        if (
+                            to_date < DB_Booked_Start_Date
+                            or from_date > DB_Booked_End_Date
+                        ):
+                            # No overlap, add roomData to All_Rooms
+                            # All_Rooms.append(roomData)
+                            All_Rooms.append(
+                                {
+                                    "user_id": roomData.get("user_id"),
+                                    "name": roomData.get("name"),
+                                    "location": roomData.get("location"),
+                                }
+                            )
+                            print(roomData)
+                        else:
+                            # Overlap, skip this room
+                            pass
             else:
                 All_Rooms.append(roomData)
 

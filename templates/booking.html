@@ -1,6 +1,5 @@
 <!-- header include -->
-{% include "partials/header.html" %}
-
+{% include "partials/header.html" %} {{bookings}}
 <h1 class="pt-5 fw-bold">Booking</h1>
 <div>
   <div class="mb-3 w-50">
@@ -23,23 +22,12 @@
       return;
     }
 
-    try {
-      timeObj = {
-        from_date: new Date(from).toISOString().replace('T', ' ').replace("Z", "+0000"),
-        to_date: new Date(to).toISOString().replace('T', ' ').replace("Z", "+0000"),
-      };
-      console.log(JSON.stringify(timeObj));
+    const queryUrl = new URLSearchParams({
+      from_date: new Date(from).getTime(),
+      to_date: new Date(to).getTime(),
+    });
 
-      const response = await fetch('/room/search-for-booking', {
-        method: 'post',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: timeObj,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    window.location.replace(`/booking?${queryUrl}`);
   });
 </script>
 
