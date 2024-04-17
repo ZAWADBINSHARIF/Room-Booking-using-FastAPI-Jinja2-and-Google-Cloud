@@ -7,7 +7,7 @@ from datetime import datetime
 
 # internal import
 from config.databaseConnection import db, firestore
-from models.roomModel import PostRoomModel
+from models.roomModel import PostRoomModel, BookingRoomModel
 
 
 RB = roomBooking = APIRouter(prefix="/room")
@@ -89,7 +89,7 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
                             or from_date > DB_Booked_End_Date
                         ):
                             # No overlap, add roomData to All_Rooms
-                            # All_Rooms.append(roomData)
+
                             All_Rooms.append(
                                 {
                                     "user_id": roomData.get("user_id"),
@@ -97,17 +97,14 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
                                     "location": roomData.get("location"),
                                 }
                             )
- 
-                        else:
-                            # Overlap, skip this room
-                            pass
+
             else:
                 All_Rooms.append(roomData)
 
     except Exception as error:
         print(error)
 
-    return  All_Rooms
+    return All_Rooms
 
 
 @RB.get("/")
@@ -140,3 +137,19 @@ async def add_single_room(formData: PostRoomModel):
         return {"error": error}
 
     return JSONResponse(content={"msg": "New room was added"}, status_code=201)
+
+
+@RB.post("/add-booking")
+async def add_booking(formData: BookingRoomModel):
+
+    start_date = datetime.strptime(formData.from_date, "%Y-%m-%dT%H:%M")
+
+    # bookings_document_ref = bookings_ref.document()
+    days_document_ref = days_ref.document()
+
+    # bookings_document_ref.set({"user_id": formData.user_id})
+    days_document_ref.set({"from_date": start_date})
+
+    print(start_date)
+
+    return {"msg": "done"}

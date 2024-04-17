@@ -27,7 +27,12 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Location: {{room.location}}</li>
         <li class="list-group-item text-end">
-          <button class="btn-first btn">Book</button>
+          <button
+            class="btn-first btn"
+            onclick="handleBooking('{{room.name}}', '{{user_info["user_id"]}}', '{{start_date}}', '{{end_date}}')"
+          >
+            Book
+          </button>
         </li>
       </ul>
     </div>
@@ -37,6 +42,34 @@
 
 <script>
   const searchBtn = document.getElementById('searchBtn');
+
+  async function handleBooking(room_id, user_id, from_date, to_date) {
+    try {
+
+      console.log(JSON.stringify({
+          room_id,
+          user_id, 
+          from_date, 
+          to_date
+        }))
+
+      await fetch('/room/add-booking', {
+        method: 'post',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          room_id,
+          user_id, 
+          from_date, 
+          to_date
+        })
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   searchBtn.addEventListener('click', async () => {
     const from = document.getElementById('from').value;
