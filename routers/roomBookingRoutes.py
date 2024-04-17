@@ -52,14 +52,12 @@ async def get_All_Rooms():
     return All_Rooms
 
 
-@RB.get("/")
-async def get():
-    return await get_All_Rooms()
+def search_for_booking_room(from_date: int | None = None, to_date: int | None = None):
 
-
-@RB.post("/search-for-booking")
-def search_for_booking_room(from_date: int, to_date: int):
     All_Rooms = []
+
+    if from_date is None or to_date is None:
+        return All_Rooms
 
     try:
         # Assuming you have a reference to your rooms collection (rooms_ref)
@@ -85,7 +83,6 @@ def search_for_booking_room(from_date: int, to_date: int):
                             dayData.get("to_date").timestamp() * 1000
                         )
 
-
                         # Compare the datetime
                         if (
                             to_date < DB_Booked_Start_Date
@@ -100,7 +97,7 @@ def search_for_booking_room(from_date: int, to_date: int):
                                     "location": roomData.get("location"),
                                 }
                             )
-                            print(roomData)
+ 
                         else:
                             # Overlap, skip this room
                             pass
@@ -110,7 +107,17 @@ def search_for_booking_room(from_date: int, to_date: int):
     except Exception as error:
         print(error)
 
-    return {"All_Rooms": All_Rooms}
+    return  All_Rooms
+
+
+@RB.get("/")
+async def get():
+    return await get_All_Rooms()
+
+
+@RB.post("/search-for-booking")
+async def free_room_searching(from_date: int, to_date: int):
+    return await search_for_booking_room(from_date, to_date)
 
 
 @RB.post("/add")

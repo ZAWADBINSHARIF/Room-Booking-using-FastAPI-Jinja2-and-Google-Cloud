@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 
 # insernal import
 from routers.roomBookingRoutes import get_All_Rooms
+from routers.roomBookingRoutes import search_for_booking_room
 
 templateRoutes = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -50,9 +51,14 @@ async def add_page(req: Request):
 
 
 @templateRoutes.get("/booking")
-async def add_page(req: Request, from_date: str | None  = None, to_date: str|None = None):
+async def add_page(
+    req: Request,
+    from_date: int | None = None,
+    to_date: int | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+):
 
-    print("booking/search")
     try:
         user_info = req.state.user_info
 
@@ -62,13 +68,19 @@ async def add_page(req: Request, from_date: str | None  = None, to_date: str|Non
     except:
         return RedirectResponse("/login")
 
-    print(from_date, to_date)
+    get_All_Free_Room = search_for_booking_room(from_date, to_date)
+    print(get_All_Free_Room)
 
     return templates.TemplateResponse(
-        request=req, name="booking.html", context={"user_info": user_info}
+        request=req,
+        name="booking.html",
+        context={
+            "user_info": user_info,
+            "all_rooms": get_All_Free_Room,
+            "start_date": start_date,
+            "end_date": end_date,
+        },
     )
-
-
 
 
 @templateRoutes.get("/login")

@@ -4,11 +4,35 @@
 <div>
   <div class="mb-3 w-50">
     <label for="from" class="form-label">From</label>
-    <input type="datetime-local" class="form-control" id="from" />
+    <input
+      type="datetime-local"
+      class="form-control"
+      id="from"
+      value="{{start_date}}"
+    />
     <label for="to" class="form-label">To</label>
-    <input type="datetime-local" class="form-control" id="to" />
+    <input
+      type="datetime-local"
+      class="form-control"
+      id="to"
+      value="{{end_date}}"
+    />
   </div>
   <button id="searchBtn" class="btn btn-first">Search</button>
+
+  <div class="d-flex flex-wrap gap-3 py-3">
+    {% if all_rooms and user_info %} {% for room in all_rooms%}
+    <div class="card" style="width: 18rem">
+      <div class="card-header">Name: {{room.name}}</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Location: {{room.location}}</li>
+        <li class="list-group-item text-end">
+          <button class="btn-first btn">Book</button>
+        </li>
+      </ul>
+    </div>
+    {% endfor %} {% endif %}
+  </div>
 </div>
 
 <script>
@@ -25,6 +49,8 @@
     const queryUrl = new URLSearchParams({
       from_date: new Date(from).getTime(),
       to_date: new Date(to).getTime(),
+      start_date: from,
+      end_date: to,
     });
 
     window.location.replace(`/booking?${queryUrl}`);
