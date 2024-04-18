@@ -1,7 +1,8 @@
 <!-- header include -->
 {% include "partials/header.html" %} {{bookings}}
 <h1 class="pt-5 fw-bold">Booking</h1>
-<div>
+<h5>Search and Book a room using a given day and time</h5>
+<div class="pt-4">
   <div class="mb-3 w-50">
     <label for="from" class="form-label">From</label>
     <input
@@ -53,7 +54,7 @@
           to_date
         }))
 
-      await fetch('/room/add-booking', {
+      const response = await fetch('/room/add-booking', {
         method: 'post',
         headers: {
           'content-type': 'application/json',
@@ -65,6 +66,10 @@
           to_date
         })
       });
+
+      if(response.status == 201){
+        location.reload();
+      }
 
     } catch (error) {
       console.log(error);

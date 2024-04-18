@@ -68,6 +68,9 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
             daysArray = roomData.get("days")
 
             if daysArray is not None:
+
+                isRoomFree = True
+
                 for day in daysArray:
                     dayData = day.get().to_dict()
 
@@ -90,13 +93,19 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
                         ):
                             # No overlap, add roomData to All_Rooms
 
-                            All_Rooms.append(
-                                {
-                                    "user_id": roomData.get("user_id"),
-                                    "name": roomData.get("name"),
-                                    "location": roomData.get("location"),
-                                }
-                            )
+                            pass
+                        else:
+                            isRoomFree = False
+                            break
+
+                if isRoomFree:
+                    All_Rooms.append(
+                        {
+                            "user_id": roomData.get("user_id"),
+                            "name": roomData.get("name"),
+                            "location": roomData.get("location"),
+                        }
+                    )
 
             else:
                 All_Rooms.append(roomData)
@@ -142,14 +151,26 @@ async def add_single_room(formData: PostRoomModel):
 @RB.post("/add-booking")
 async def add_booking(formData: BookingRoomModel):
 
-    start_date = datetime.strptime(formData.from_date, "%Y-%m-%dT%H:%M")
+    try:
+        start_date = datetime.strptime(formData.from_date, "%Y-%m-%dT%H:%M")
+        end_date = datetime.strptime(formData.to_date, "%Y-%m-%dT%H:%M")
 
-    # bookings_document_ref = bookings_ref.document()
-    days_document_ref = days_ref.document()
+        bookings_document_ref = bookings_ref.document()
+        days_document_ref = days_ref.document()
+        rooms_document_ref = rooms_ref.document(formData.room_id)
 
-    # bookings_document_ref.set({"user_id": formData.user_id})
-    days_document_ref.set({"from_date": start_date})
+        bookings_document_ref.set({"user_id": formData.user_id})
+        days_document_ref.set(
+            {
+                "from_date": start_date,
+                "to_date": end_date,
+                "booking_id": bookings_document_ref,
+            }
+        )
+        rooms_document_ref.update({"days": firestore.ArrayUnion([days_document_ref])})
 
-    print(start_date)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content={"msg": "something was wrong"}, status_code=500)
 
-    return {"msg": "done"}
+    return JSONResponse(content={"msg": "Booking has been done"}, status_code=201)
