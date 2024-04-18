@@ -33,11 +33,11 @@ async def get_All_Rooms():
                 All_days = []
                 for day in daysArray:
                     dayData = day.get().to_dict()
-                    booking = dayData.get("booking")
+                    booking = dayData.get("booking_id")
 
                     if booking:
                         bookingData = booking.get().to_dict()
-                        dayData["booking"] = bookingData
+                        dayData["booking_id"] = bookingData
 
                     All_days.append(dayData)
 
@@ -118,7 +118,9 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
 
 @RB.get("/")
 async def get():
-    return await get_All_Rooms()
+    all_rooms = await get_All_Rooms()
+    print(all_rooms)
+    return {"all_rooms": all_rooms}
 
 
 @RB.post("/search-for-booking")
