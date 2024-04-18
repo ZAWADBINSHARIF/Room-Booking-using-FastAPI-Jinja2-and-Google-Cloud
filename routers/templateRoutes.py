@@ -5,8 +5,11 @@ from fastapi.templating import Jinja2Templates
 
 
 # insernal import
-from routers.roomBookingRoutes import get_All_Rooms
-from routers.roomBookingRoutes import search_for_booking_room
+from routers.roomBookingRoutes import (
+    search_for_booking_room,
+    get_single_room,
+    get_All_Rooms,
+)
 
 templateRoutes = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -30,6 +33,26 @@ async def home_page(req: Request, response_class=HTMLResponse):
         request=req,
         name="home.html",
         context={"user_info": user_info, "all_rooms": all_rooms},
+    )
+
+
+@templateRoutes.get("/single")
+async def single_page(req: Request, room_id: str):
+    try:
+        user_info = req.state.user_info
+
+        if len(user_info) == 0:
+            return RedirectResponse("/login")
+
+    except:
+        return RedirectResponse("/login")
+
+    room_info = await get_single_room(room_id=room_id)
+    print(room_info)
+    return templates.TemplateResponse(
+        request=req,
+        name="single.html",
+        context={"user_info": user_info, "room_info": room_info},
     )
 
 

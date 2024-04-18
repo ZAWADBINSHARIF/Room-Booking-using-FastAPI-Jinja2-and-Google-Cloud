@@ -21,6 +21,15 @@ a {
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
 
+.room-card {
+  cursor: pointer;
+}
+
+.room-card:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
 .btn-first {
   background: linear-gradient(to right, #90ccf3, #f59cab, #f3d9b0, #cae9f5);
   color: black;
@@ -36,7 +45,7 @@ a {
 .btn-second {
   background: #ffffff;
 }
-.btn-third{
+.btn-third {
   background: #79c9ff;
 }
 .btn-delete {

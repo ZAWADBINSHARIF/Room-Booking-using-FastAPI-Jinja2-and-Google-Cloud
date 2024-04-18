@@ -18,3 +18,7 @@ class RemoveBookingModel(BaseModel):
     room_id: str
     day_id: str
     booking_id: str
+
+
+class RemoveRoomModle(BaseModel):
+    room_id: str

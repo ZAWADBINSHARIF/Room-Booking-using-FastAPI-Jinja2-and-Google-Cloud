@@ -5,7 +5,11 @@
   <h1 class="fw-bold">All Rooms</h1>
   <div class="d-flex flex-wrap gap-3">
     {% if all_rooms and user_info %} {% for room in all_rooms%}
-    <div class="card" style="width: 18rem">
+    <div
+      class="card room-card"
+      onclick="roomCard(`{{room.name}}`)"
+      style="width: 18rem"
+    >
       <h3 class="card-header">Room</h3>
       <div class="card-header">Name: {{room.name}}</div>
       <ul class="list-group list-group-flush">
@@ -29,9 +33,9 @@
         <li class="list-group-item text-end">
           <button
             class="btn-delete btn"
-            onclick="handleBookingDelete('{{room.name}}', '{{day.id}}', '{{day.booking_id.id}}')"
+            onclick="handleBookingDelete(`{{room.name}}`, `{{day.id}}`, `{{day.booking_id.id}}`)"
           >
-            Delete
+            Delete Booking
           </button>
         </li>
       </ul>
@@ -41,6 +45,10 @@
 </div>
 
 <script>
+  function roomCard(room_id) {
+    window.location = `/single?room_id=${room_id}`;
+  }
+
   async function handleBookingDelete(room_id, day_id, booking_id) {
     console.log(room_id, day_id, booking_id);
 
@@ -52,6 +60,10 @@
         },
         body: JSON.stringify({ room_id, day_id, booking_id }),
       });
+
+      if (response.status == 200) {
+        location.reload();
+      }
     } catch (error) {
       console.log(error);
     }

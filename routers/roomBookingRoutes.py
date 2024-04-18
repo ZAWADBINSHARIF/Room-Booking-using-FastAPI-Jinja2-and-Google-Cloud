@@ -7,7 +7,12 @@ from datetime import datetime
 
 # internal import
 from config.databaseConnection import db, firestore
-from models.roomModel import PostRoomModel, BookingRoomModel, RemoveBookingModel
+from models.roomModel import (
+    PostRoomModel,
+    BookingRoomModel,
+    RemoveBookingModel,
+    RemoveRoomModle,
+)
 
 
 RB = roomBooking = APIRouter(prefix="/room")
@@ -120,11 +125,53 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
     return All_Rooms
 
 
+async def get_single_room(room_id: str):
+
+    room_info = []
+
+    try:
+        roomData = rooms_ref.document(room_id).get().to_dict()
+
+        daysArray = roomData.get("days")
+
+        if daysArray:
+            All_days = []
+            for day in daysArray:
+
+                dayData = day.get().to_dict()
+                booking = dayData.get("booking_id")
+
+                dayData["id"] = day.id
+
+                if booking:
+                    bookingData = booking.get().to_dict()
+                    dayData["booking_id"] = bookingData
+                    bookingData["id"] = booking.id
+
+                All_days.append(dayData)
+
+            roomData["days"] = All_days
+            room_info.append(roomData)
+        else:
+            room_info.append(roomData)
+
+    except Exception as error:
+        print(error)
+
+    return room_info
+
+
 @RB.get("/")
 async def get():
     all_rooms = await get_All_Rooms()
 
     return {"all_rooms": all_rooms}
+
+
+@RB.get("/single")
+async def get_single(room_id: str):
+
+    return {"room_info": await get_single_room(room_id)}
 
 
 @RB.post("/search-for-booking")
@@ -212,7 +259,20 @@ async def remove_booking(formData: RemoveBookingModel):
 
         print("\n" + day_document_ref.id)
 
-    except Exception as error:
-        print(error)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content={"msg": "something was wrong"}, status_code=500)
 
-    return {"msg": "remove"}
+    return JSONResponse(content={"msg": "Booking has been deleted"}, status_code=200)
+
+
+@RB.post("/remove-room")
+async def remove_room(formData: RemoveRoomModle):
+    try:
+        print(formData.room_id)
+        rooms_ref.document(formData.room_id).delete()
+    except Exception as e:
+        print(e)
+        return JSONResponse(content={"msg": "something was wrong"}, status_code=500)
+
+    return JSONResponse(content={"msg": "Room has been done"}, status_code=200)

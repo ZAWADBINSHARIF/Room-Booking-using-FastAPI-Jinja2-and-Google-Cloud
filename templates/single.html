@@ -1,0 +1,71 @@
+<!-- header include -->
+{% include "partials/header.html" %}
+
+<div class="py-5">
+  <h1 class="fw-bold">Single Room Info</h1>
+  <div class="d-flex flex-wrap gap-3">
+    {% if room_info and user_info %} {% for room in room_info%}
+    <div class="card" style="width: 18rem">
+      <h3 class="card-header">Room</h3>
+      <div class="card-header">Name: {{room.name}}</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Location: {{room.location}}</li>
+        {% if room.days|length > 0 %}
+        <li class="list-group-item">
+          Booking:
+          <ul class="list-group list-group-numbered">
+            {% for day in room.days%}
+
+            <li class="list-group-item">
+              <br />
+              <b>From:</b> {{day.from_date}} <br />
+              <b>to:</b>{{day.to_date}}
+            </li>
+
+            {% endfor %}
+          </ul>
+        </li>
+
+        {% else %} {% if user_info.user_id == room.user_id%}
+        <li class="list-group-item text-end">
+          <button
+            class="btn-delete btn"
+            onclick="handleRemoveRoom(`{{room.name}}`)"
+          >
+            Delete Room
+          </button>
+        </li>
+
+        {% else %}
+        <li class="list-group-item text-start">
+          You are not allowed to delete this room
+        </li>
+        {% endif %} {% endif %}
+      </ul>
+    </div>
+    {% endfor %} {% endif %}
+  </div>
+
+  <script>
+    async function handleRemoveRoom(room_id) {
+      try {
+        const response = await fetch('/room/remove-room', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ room_id }),
+        });
+
+        if (response.status == 200) {
+          window.location = '/';
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  </script>
+
+  <!-- footer include  -->
+  {% include "partials/footer.html" %}
+</div>
