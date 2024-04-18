@@ -7,7 +7,7 @@ from datetime import datetime
 
 # internal import
 from config.databaseConnection import db, firestore
-from models.roomModel import PostRoomModel, BookingRoomModel
+from models.roomModel import PostRoomModel, BookingRoomModel, RemoveBookingModel
 
 
 RB = roomBooking = APIRouter(prefix="/room")
@@ -32,12 +32,16 @@ async def get_All_Rooms():
             if daysArray:
                 All_days = []
                 for day in daysArray:
+
                     dayData = day.get().to_dict()
                     booking = dayData.get("booking_id")
+
+                    dayData["id"] = day.id
 
                     if booking:
                         bookingData = booking.get().to_dict()
                         dayData["booking_id"] = bookingData
+                        bookingData["id"] = booking.id
 
                     All_days.append(dayData)
 
@@ -119,7 +123,7 @@ def search_for_booking_room(from_date: int | None = None, to_date: int | None = 
 @RB.get("/")
 async def get():
     all_rooms = await get_All_Rooms()
-    print(all_rooms)
+
     return {"all_rooms": all_rooms}
 
 
@@ -176,3 +180,39 @@ async def add_booking(formData: BookingRoomModel):
         return JSONResponse(content={"msg": "something was wrong"}, status_code=500)
 
     return JSONResponse(content={"msg": "Booking has been done"}, status_code=201)
+
+
+@RB.post("/remove-booking")
+async def remove_booking(formData: RemoveBookingModel):
+    print(formData.room_id, formData.day_id, formData.booking_id)
+
+    try:
+        room_ref = rooms_ref.document(formData.room_id)
+        day_document_ref = days_ref.document(formData.day_id)
+        booking_ref = bookings_ref.document(formData.booking_id)
+
+        room_days_array = (
+            rooms_ref.document(formData.room_id)
+            .get(field_paths=["days"])
+            .to_dict()
+            .get("days")
+        )
+
+        room_days_array = [
+            day for day in room_days_array if day.id != day_document_ref.id
+        ]
+
+        room_ref.update({"days": room_days_array})
+
+        day_document_ref.delete()
+        booking_ref.delete()
+
+        for day in room_days_array:
+            print(day.id)
+
+        print("\n" + day_document_ref.id)
+
+    except Exception as error:
+        print(error)
+
+    return {"msg": "remove"}

@@ -7,38 +7,56 @@
     {% if all_rooms and user_info %} {% for room in all_rooms%}
     <div class="card" style="width: 18rem">
       <h3 class="card-header">Room</h3>
-      <h3 class="card-header">Name: {{room.name}}</h3>
+      <div class="card-header">Name: {{room.name}}</div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Location: {{room.location}}</li>
       </ul>
     </div>
     {% endfor %} {% endif %}
   </div>
-  
-  
+
   <h1 class="fw-bold pt-5">All Bookings</h1>
   <div class="d-flex flex-wrap gap-3">
-    {% if all_rooms and user_info %} {% for room in all_rooms%}
-
-        {% if room.days|length > 0 %}
-              {% for day in room.days%}
-                <div class="card" style="width: 18rem">
-                  <h3 class="card-header">Booked</h3>
-                  <div class="card-header">Name: {{room.name}}</div>
-                  <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Location: {{room.location}}</li>
-                    <li class="list-group-item">From: {{day.from_date}}</li>
-                    <li class="list-group-item">To: {{day.to_date}}</li>
-                    <li class="list-group-item text-end">
-                      <button class="btn-delete btn">Delete</button>
-                    </li>
-                  </ul>
-                </div>
-              {% endfor %}
-          {% endif %}
-    {% endfor %} {% endif %}
+    {% if all_rooms and user_info %} {% for room in all_rooms%} {% if
+    room.days|length > 0 %} {% for day in room.days%}
+    <div class="card" style="width: 18rem">
+      <h3 class="card-header">Booked</h3>
+      <div class="card-header">Name: {{room.name}}</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Location: {{room.location}}</li>
+        <li class="list-group-item">From: {{day.from_date}}</li>
+        <li class="list-group-item">To: {{day.to_date}}</li>
+        <li class="list-group-item text-end">
+          <button
+            class="btn-delete btn"
+            onclick="handleBookingDelete('{{room.name}}', '{{day.id}}', '{{day.booking_id.id}}')"
+          >
+            Delete
+          </button>
+        </li>
+      </ul>
+    </div>
+    {% endfor %} {% endif %} {% endfor %} {% endif %}
   </div>
 </div>
+
+<script>
+  async function handleBookingDelete(room_id, day_id, booking_id) {
+    console.log(room_id, day_id, booking_id);
+
+    try {
+      const response = await fetch('/room/remove-booking', {
+        method: 'post',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ room_id, day_id, booking_id }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+</script>
 
 <!-- footer include  -->
 {% include "partials/footer.html" %}
